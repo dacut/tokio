@@ -5,9 +5,12 @@ use std::task::{Context, Poll};
 
 /// Writes bytes asynchronously.
 ///
-/// The trait inherits from [`std::io::Write`] and indicates that an I/O object is
-/// **nonblocking**. All non-blocking I/O objects must return an error when
-/// bytes cannot be written instead of blocking the current thread.
+/// The trait is analogous to the [`std::io::Write`] trait, but integrates with
+/// the asynchronous task system. In particular, the [`poll_flush`], [`poll_write`],
+/// and [`poll_write_vectored`] methods, unlike [`Write::flush`], [`Write::write`],
+/// and [`Write::write_vectored`], will  automatically queue the current task for
+/// wakeup and return if data cannot be flushed/written, rather than blocking the
+/// calling thread.
 ///
 /// Specifically, this means that the [`poll_write`] function will return one of
 /// the following:
